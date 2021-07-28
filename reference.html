@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Kiswe Challenge</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="robots" content="index, nofollow">
+    <meta name="author" content="Gilles Ravert">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- get Vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+
+</head>
+<body>
+    <div id="app" v-bind:title="msg2" v-bind:test="computedPropertyExample" :class="{active : isActive}">
+        {{ msg }}
+    </div>
+    <div id='fortest'>
+        <ol>
+            <!-- Important part here is the v-bind:item command. It binds the current listitem to 'item', which is passed to the template. -->
+            <list-item v-for="listitem in items" :item="listitem" :title="listitem.title" :key="listitem.id">
+            </li>
+        </ol>
+    </div>
+    <div id="methodApp">
+        <button id="button" @click="testMethod">Click me!</button>
+    </div>
+</body>
+</html>
