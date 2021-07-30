@@ -1,43 +1,82 @@
 <template>
-  <div class="login container h-100">
-    <div class="d-flex justify-content-center h-100">
-      <div class="user_card">
-        <div class="d-flex justify-content-center form_container">
-          <form>
-            <div class="input-group mb-3">
-              <div class="input-group-append">
-                <span class="input-group-text"><i class="fas fa-user"></i></span>
+  <div id="loginForm">
+    <div class="login container h-100">
+      <div class="d-flex justify-content-center h-100">
+        <div class="user_card">
+          <div class="d-flex justify-content-center form_container">
+            <form>
+              <div class="input-group mb-3">
+                <span v-if="this.$route.params.loginFailed" class="input-group-loginWarning">{{loginWarning}}</span>
               </div>
-              <input type="text" name="" class="form-control input_user" value="" placeholder="Username">
-            </div>
-            <div class="input-group mb-2">
-              <div class="input-group-append">
-                <span class="input-group-text"><i class="fas fa-key"></i></span>
+              <div class="input-group mb-3">
+                <div class="input-group-append">
+                  <span class="input-group-text"><i class="fas fa-user"></i></span>
+                </div>
+                <input type="text" name="" class="form-control input_user" v-bind:placeholder="usernamePlaceholder" v-model="username">
               </div>
-              <input type="password" name="" class="form-control input_pass" value="" placeholder="Password">
-            </div>
-            <div class="form-group">
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="customControlInline">
-                <label class="custom-control-label" for="customControlInline">Remember me</label>
+              <div class="input-group mb-2">
+                <div class="input-group-append">
+                  <span class="input-group-text"><i class="fas fa-key"></i></span>
+                </div>
+                <input type="password" name="" class="form-control input_pass" v-bind:placeholder="passwordPlaceholder" v-model="password">
               </div>
-            </div>
-            <div class="d-flex justify-content-center mt-3 login_container">
-              <button type="button" name="button" class="btn login_btn">Login</button>
-            </div>
-          </form>
-        </div>
+              <div class="form-group">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="customControlInline">
+                  <label class="custom-control-label" for="customControlInline">{{rememberMe}}</label>
+                </div>
+              </div>
+              <div class="d-flex justify-content-center mt-3 login_container">
+                <button @click="attemptLogin" type="button" name="button" class="btn login_btn">{{loginbtn}}</button>
+              </div>
+            </form>
+          </div>
 
-        <div class="mt-3">
-          <div class="d-flex justify-content-center links">
-            <router-link to="/register">Sign up</router-link>&nbsp;|&nbsp;
-            <router-link to="/register">Forgot your password?</router-link>
+          <div class="mt-3">
+            <div class="d-flex justify-content-center links">
+              <router-link to="/register">{{signup}}</router-link>&nbsp;|&nbsp;
+              <!-- TODO: make a typical password recovery page -->
+              <router-link to="/register">{{recovery}}</router-link>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+<script>
+  /*eslint-disable*/
+  import Vue from 'vue';
+  import { createApp } from 'vue';
+
+  /* NOTE: it is apparently very important to always use export default! */
+  export default ({
+    el: '#loginForm',
+    name: 'Login',
+    data(){
+      return {
+        loginbtn: 'Login',
+        username: '',
+        usernamePlaceholder: 'Username',
+        password: '',
+        passwordPlaceholder: 'Password',
+        rememberMe: 'Remember me',
+        signup: 'Sign up',
+        recovery: 'Forgot your password?',
+        loginWarning: 'Error: logging in failed. Please try again.',
+      }
+    },
+    methods:{
+      attemptLogin: function(){
+
+        if (this.username === 'test' && this.password === 'kiswe')
+          this.$router.push({ name: 'Welcome', params: {loginFailed: false}});
+        else
+          this.$router.push({ name: 'Login', params: {loginFailed: true}});
+      }
+    }
+  });
+</script>
 
 <style lang="scss">
 /* Based on the following template: https://bootsnipp.com/snippets/3522X */
@@ -85,6 +124,10 @@ html {
   color: white !important;
   border: 0 !important;
   border-radius: 0.25rem 0 0 0.25rem !important;
+}
+.input-group-loginWarning {
+  color: black;
+  width: 100%;
 }
 .input_user,
 .input_pass:focus {
