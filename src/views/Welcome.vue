@@ -1,62 +1,51 @@
 <template>
-  <div id="example">
-    Logged in!
+  <div id="welcomeTemplate">
+    <div class="login container h-100">
+      <div class="d-flex justify-content-center h-100">
+        <div class="user_card">
+            <div class="input-group mb-3">
+              <h1><strong>{{RedirectHeader}}</strong></h1>
+            </div>
+            <div class="input-group mb-3">
+              <span>Login successful, please wait a moment...</span>
+            </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
-
+<script>
+  /* NOTE: it is apparently very important to always use export default! */
+  export default ({
+    el: '#welcomeTemplate',
+    name: 'Welcome',
+    data(){
+      return {
+        RedirectHeader: 'Redirecting',
+        loginbtn: 'Login',
+      }
+    },
+    methods:{
+      attemptLogin: function(){
+        if (this.username === 'test' && this.password === 'kiswe')
+          this.$router.push({ name: 'Welcome', params: {loginFailed: false}});
+        else{
+          this.$router.push({ name: 'Login', params: {loginFailed: true}});
+        }
+      }
+    },
+    updated: function(){
+      this.disableButton = this.username === '' || this.password === '';
+    },
+    mounted: function(){
+      // source: https://forum.vuejs.org/t/capture-keypress-for-all-keys/14560/2
+      // this allows users to press enter to log in
+      window.addEventListener("keypress", function(e) {
+        if(e.keyCode == 13 && !this.disableButton)
+          this.attemptLogin();
+      }.bind(this));
+    }
+  });
+</script>
 <style lang="scss">
-/* Based on the following template: https://bootsnipp.com/snippets/3522X */
-body,
-html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background: #d9d1d0 !important;
-}
-.user_card {
-  height: auto;
-  width: 350px;
-  margin-top: auto;
-  margin-bottom: auto;
-  background: #f2f0f0;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  padding: 10px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  border-radius: 5px;
-
-}
-.form_container {
-  margin-top: 50px;
-}
-.login_btn {
-  width: 100%;
-  background: #c0392b !important;
-  color: white !important;
-}
-.login_btn:focus {
-  /*box-shadow: none !important; */
-  outline: 0px !important;
-}
-.login_container {
-  padding: 0 2rem;
-}
-.input-group-text {
-  background: #c0392b !important;
-  color: white !important;
-  border: 0 !important;
-  border-radius: 0.25rem 0 0 0.25rem !important;
-}
-.input_user,
-.input_pass:focus {
-  box-shadow: none !important;
-  outline: 0px !important;
-}
-.custom-checkbox .custom-control-input:checked~.custom-control-label::before {
-  background-color: #c0392b !important;
-}
 </style>

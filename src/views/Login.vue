@@ -6,6 +6,9 @@
           <div class="d-flex justify-content-center form_container">
             <form>
               <div class="input-group mb-3">
+                <h1 class="input-group-loginHeader"><strong>{{loginHeader}}</strong></h1>
+              </div>
+              <div class="input-group mb-3">
                 <span v-if="this.$route.params.loginFailed" class="input-group-loginWarning">{{loginWarning}}</span>
               </div>
               <div class="input-group mb-3">
@@ -20,16 +23,25 @@
                 </div>
                 <input type="password" name="" class="form-control input_pass" v-bind:placeholder="passwordPlaceholder" v-model="password">
               </div>
-              <div class="form-group">
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="customControlInline">
-                  <label class="custom-control-label" for="customControlInline">{{rememberMe}}</label>
+
+              <div class="input-group mb-2">
+                <div v-if="capsEnabled" class="input-group-append">
+                  <span class="input-group-text"><i class="fas fa-exclamation-triangle"></i>&nbsp;{{capsWarning}}</span>
                 </div>
               </div>
+
+              <div class="form-group">
+                <div class="checkbox">
+                  <input type="checkbox" id="customControlInline">
+                  <label for="customControlInline">{{rememberMe}}</label>
+                </div>
+              </div>
+
               <div class="d-flex justify-content-center mt-3 login_container">
-                <button @click="attemptLogin" type="button" name="button" class="btn login_btn">{{loginbtn}}</button>
+                <button id="loginButton" @click="attemptLogin" type="button" name="button" class="btn login_btn" :disabled="disableButton">{{loginbtn}}</button>
               </div>
             </form>
+            <!-- TODO: Capslock warning? -->
           </div>
 
           <div class="mt-3">
@@ -45,96 +57,56 @@
   </div>
 </template>
 <script>
-  /*eslint-disable*/
-  import Vue from 'vue';
-  import { createApp } from 'vue';
-
   /* NOTE: it is apparently very important to always use export default! */
   export default ({
     el: '#loginForm',
     name: 'Login',
     data(){
       return {
+        loginHeader: 'Login',
         loginbtn: 'Login',
         username: '',
-        usernamePlaceholder: 'Username',
+        usernamePlaceholder: 'Username or email',
         password: '',
         passwordPlaceholder: 'Password',
         rememberMe: 'Remember me',
         signup: 'Sign up',
         recovery: 'Forgot your password?',
         loginWarning: 'Error: logging in failed. Please try again.',
+        capsWarning: 'Capslock is turned on.',
+        disableButton: true,
+        capsEnabled: false,
       }
     },
     methods:{
       attemptLogin: function(){
-
         if (this.username === 'test' && this.password === 'kiswe')
           this.$router.push({ name: 'Welcome', params: {loginFailed: false}});
-        else
+        else{
           this.$router.push({ name: 'Login', params: {loginFailed: true}});
+        }
       }
+    },
+    updated: function(){
+      this.disableButton = this.username === '' || this.password === '';
+    },
+    mounted: function(){
+      // source: https://forum.vuejs.org/t/capture-keypress-for-all-keys/14560/2
+      // this allows users to press enter to log in
+      window.addEventListener("keypress", function(e) {
+        if(e.keyCode == 13 && !this.disableButton)
+          this.attemptLogin();
+      }.bind(this));
+      window.addEventListener("keyup", function(e) {
+        if (e.getModifierState('CapsLock')) {
+          this.capsEnabled = true;
+        } else {
+          this.capsEnabled = false;
+        }
+      }.bind(this));
     }
   });
 </script>
 
 <style lang="scss">
-/* Based on the following template: https://bootsnipp.com/snippets/3522X */
-body,
-html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background: #d9d1d0 !important;
-}
-.user_card {
-  height: auto;
-  width: 350px;
-  margin-top: auto;
-  margin-bottom: auto;
-  background: #f2f0f0;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  padding: 10px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  border-radius: 5px;
-
-}
-.form_container {
-  margin-top: 50px;
-}
-.login_btn {
-  width: 100%;
-  background: #c0392b !important;
-  color: white !important;
-}
-.login_btn:focus {
-  /*box-shadow: none !important; */
-  outline: 0px !important;
-}
-.login_container {
-  padding: 0 2rem;
-}
-.input-group-text {
-  background: #c0392b !important;
-  color: white !important;
-  border: 0 !important;
-  border-radius: 0.25rem 0 0 0.25rem !important;
-}
-.input-group-loginWarning {
-  color: black;
-  width: 100%;
-}
-.input_user,
-.input_pass:focus {
-  box-shadow: none !important;
-  outline: 0px !important;
-}
-.custom-checkbox .custom-control-input:checked~.custom-control-label::before {
-  background-color: #c0392b !important;
-}
 </style>
