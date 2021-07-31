@@ -24,30 +24,27 @@
                 <input type="password" name="" class="form-control input_pass" v-bind:placeholder="passwordPlaceholder" v-model="password">
               </div>
 
-              <div class="input-group mb-2">
-                <div v-if="capsEnabled" class="input-group-append">
-                  <span class="input-group-text"><i class="fas fa-exclamation-triangle"></i>&nbsp;{{capsWarning}}</span>
-                </div>
-              </div>
-
               <div class="form-group">
                 <div class="checkbox">
                   <input type="checkbox" id="customControlInline">
                   <label for="customControlInline">{{rememberMe}}</label>
                 </div>
               </div>
-
+              <div class="d-flex justify-content-center mt-3 login_container">
+                <div class="input-group-append">
+                  <span v-show="capsEnabled" class="input-group-text"><i class="fas fa-exclamation-triangle"></i>&nbsp;{{capsWarning}}</span>
+                </div>
+              </div>
               <div class="d-flex justify-content-center mt-3 login_container">
                 <button id="loginButton" @click="attemptLogin" type="button" name="button" class="btn login_btn" :disabled="disableButton">{{loginbtn}}</button>
               </div>
             </form>
-            <!-- TODO: Capslock warning? -->
           </div>
 
           <div class="mt-3">
             <div class="d-flex justify-content-center links">
               <router-link to="/register">{{signup}}</router-link>&nbsp;|&nbsp;
-              <!-- TODO: make a typical password recovery page -->
+              <!-- TODO: make a typical password recovery page? -->
               <router-link to="/register">{{recovery}}</router-link>
             </div>
           </div>
@@ -81,7 +78,7 @@
     methods:{
       attemptLogin: function(){
         if (this.username === 'test' && this.password === 'kiswe')
-          this.$router.push({ name: 'Welcome', params: {loginFailed: false}});
+          this.$router.push({ name: 'Welcome', params: {loginSuccess: true}});
         else{
           this.$router.push({ name: 'Login', params: {loginFailed: true}});
         }
