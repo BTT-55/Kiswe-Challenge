@@ -11,12 +11,14 @@
               <div class="input-group mb-3">
                 <span v-if="this.$route.params.loginFailed" class="input-group-loginWarning">{{loginWarning}}</span>
               </div>
-              <div class="input-group mb-3">
+
+              <div class="input-group mb-3 form-floating">
                 <div class="input-group-append">
                   <span class="input-group-text"><i class="fas fa-user"></i></span>
                 </div>
-                <input type="text" name="" class="form-control input_user" v-bind:placeholder="usernamePlaceholder" v-model="username">
+                <input type="text" class="form-control input_user" v-bind:placeholder="usernamePlaceholder" v-model="username">
               </div>
+
               <div class="input-group mb-2">
                 <div class="input-group-append">
                   <span class="input-group-text"><i class="fas fa-key"></i></span>
@@ -31,8 +33,8 @@
                 </div>
               </div>
               <div class="d-flex justify-content-center mt-3 login_container">
-                <div class="input-group-append">
-                  <span v-show="capsEnabled" class="input-group-text"><i class="fas fa-exclamation-triangle"></i>&nbsp;{{capsWarning}}</span>
+                <div v-show="capsEnabled" class="alert alert-warning">
+                  <span><i class="fas fa-exclamation-triangle"></i>&nbsp;{{capsWarning}}</span>
                 </div>
               </div>
               <div class="d-flex justify-content-center mt-3 login_container">

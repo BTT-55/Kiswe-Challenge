@@ -20,18 +20,7 @@
                 </div>
                 <input type="text" name="" class="form-control input_user" :placeholder="lastNamePlaceholder" v-model="lastName">
               </div>
-              <div class="input-group mb-3">
-                <div class="input-group-append">
-                  <span class="input-group-text"><i class="fas fa-key"></i></span>
-                </div>
-                <input type="password" name="" class="form-control input_pass" :placeholder="passwordPlaceholder" v-model="password">
-              </div>
-              <div class="input-group mb-3">
-                <div class="input-group-append">
-                  <span class="input-group-text"><i class="fas fa-redo"></i></span>
-                </div>
-                <input type="password" name="" class="form-control input_pass" :placeholder="passwordConfirmPlaceholder" v-model="passwordConfirm">
-              </div>
+
               <div class="input-group mb-2">
                 <div class="input-group-append">
                   <span class="input-group-text"><i class="fas fa-envelope-open-text"></i></span>
@@ -39,10 +28,49 @@
                 <input type="email" name="" class="form-control input_pass" :placeholder="emailPlaceholder" v-model="email">
               </div>
 
-              <!-- TODO: replace these with proper bootstrap alerts! -->
+              <div class="input-group mb-3">
+                <div class="input-group-append">
+                  <span class="input-group-text"><i class="fas fa-key"></i></span>
+                </div>
+                <input type="password" name="" class="form-control input_pass" :placeholder="passwordPlaceholder" v-model="password">
+              </div>
+
+              <div class="d-flex justify-content-center mt-2 login_container">
+                <div class="input-group">
+                  <div class="input-group-append">
+                    <span v-if="firstRuleValid" class="input-group-text"><i class="fas fa-check set-fa"></i></span>
+                    <span v-else class="input-group-text inactive-fa"><i class="fas fa-times set-fa"></i></span>
+                  </div>
+                  &nbsp;{{firstRuleExplanation}}
+                </div>
+              </div>
+
               <div class="d-flex justify-content-center mt-3 login_container">
-                <div v-if="passwordsNoMatch" class="input-group-append">
-                  <span class="input-group-text"><i class="fas fa-exclamation-triangle"></i>&nbsp;{{passwordsNoMatchWarning}}</span>
+                <div class="input-group mb-3">
+                  <div class="input-group-append">
+                    <span v-if="secondRuleValid" class="input-group-text"><i class="fas fa-check set-fa"></i></span>
+                    <span v-else class="input-group-text inactive-fa"><i class="fas fa-times set-fa"></i></span>
+                  </div>
+                  &nbsp;{{secondRuleExplanation}}
+                </div>
+              </div>
+
+              <div class="input-group mb-3">
+                <div class="input-group-append">
+                  <span class="input-group-text"><i class="fas fa-redo"></i></span>
+                </div>
+                <input type="password" name="" class="form-control input_pass" :placeholder="passwordConfirmPlaceholder" v-model="passwordConfirm">
+              </div>
+
+              <div class="d-flex justify-content-center mt-3 login_container">
+                <div v-if="passwordsNoMatch" class="alert alert-warning">
+                  <span><i class="fas fa-exclamation-triangle"></i>&nbsp;{{passwordsNoMatchWarning}}</span>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-center mt-3 login_container">
+                <div v-show="capsEnabled" class="alert alert-warning">
+                  <span><i class="fas fa-exclamation-triangle"></i>&nbsp;{{capsWarning}}</span>
                 </div>
               </div>
 
@@ -87,11 +115,17 @@
         invalidEmail: false,
         passwordsNoMatch: false,
         passwordsNoMatchWarning: 'Passwords don\'t match.',
+        passwordReqHeader: 'Password must have at least:',
+        firstRuleValid: false,
+        firstRuleExplanation: 'Longer than 8 characters',
+        secondRuleValid: false,
+        secondRuleExplanation: 'Contain one non-alphanumeric symbol',
+        capsEnabled: false,
+        capsWarning: 'Capslock is turned on.',
       }
     },
     methods:{
       attemptSignUp(){
-        console.log("test!");
         // only sign the user up if the user can sign up (shown by the button being enabled)
         if(this.disableButton)
           return;
@@ -103,11 +137,26 @@
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         // (note: not perfect validation but works for examples)
         this.validEmail = re.test(this.email);
+
+        // check if the rules for the passwords have been met
+        this.firstRuleValid = this.password.length > 8;
+        const nonalphanum = /^.*[^a-zA-Z0-9].*$/
+        this.secondRuleValid = nonalphanum.test(this.password);
         // this should really compare the encrypted password strings instead of the passwords themselves
         this.passwordsNoMatch = this.password !== this.passwordConfirm && this.password !== '' && this.passwordConfirm !== '';
+
         // disable the button if data is lacking
         this.disableButton = this.firstName === '' || this.lastName === '' || this.password === ''  || this.passwordsNoMatch || !this.validEmail;
       },
+    mounted: function() {      
+      window.addEventListener("keyup", function(e) {
+        if (e.getModifierState('CapsLock')) {
+          this.capsEnabled = true;
+        } else {
+          this.capsEnabled = false;
+        }
+      }.bind(this));
+    }
     });
   </script>
   <style lang="scss">

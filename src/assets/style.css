@@ -15,7 +15,7 @@ a:hover {
 }
 .user_card {
   height: auto;
-  width: 350px;
+  width: 450px;
   margin-top: auto;
   margin-bottom: auto;
   background: #eae7dc;
@@ -107,4 +107,12 @@ input[type="checkbox"] + label::before {
   background-color: white;
   border-radius: 4px;
   margin-right: 0.5em;
+}
+
+.set-fa {
+  width: 10px;
+}
+
+.inactive-fa {
+  background-color: #e98074 !important;
 }
